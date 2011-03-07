@@ -1,0 +1,83 @@
+!!! Transitional
+%html{:xmlns=>'http://www.w3.org/1999/xhtml'}
+  %head
+    =$head['output']
+    - foreach( gather($css_assets['data'], 'assets') as $link)
+      %link{:rel=>'stylesheet', :href=>$link['src']}
+    - foreach(gather($js_assets['data'], 'assets') as $link)
+      %script{:type=>'text/javascript', :src=>$link['src']}          
+    =$css_assets['output']
+    =$js_assets['output']
+    %title =se(APP_NAME,false)
+    -if($run_mode == RUN_MODE_DEVELOPMENT)
+      :sass
+        body
+          .top
+            .navigation
+              :background-color #136
+  %body
+    =$body_start['output']
+    .mainArea{:style=>'background-color: white;'}
+      .top      
+        %div{:class=>"top"}
+          %div{:class=>"top-menu-navigation", :style=>"width:100%;"}
+            %div{:id=>"top_menu", :class=>"links" }
+              .clickable
+                %a{:href=>home_url()} =se("Home")
+              - foreach ($top_menu_items as $menu)
+                .clickable
+                  = link_to($menu->title, $menu->url)
+              - foreach(gather($nav_links['data'], 'links') as $link)
+                .clickable
+                  %a{:href=>$link['href']}= $link['label']
+              =$before_nav_widgets['output']
+              =$nav_widgets['output']
+        .banner{:id=>'headerbar',:style=>"width: 100%;"}
+        -if($domain_settings->header_image_link)
+          :js
+            $('#headerbar').click(function() {
+              top.location = "<?=$domain_settings->header_image_link?>";
+            });
+        - if (count($bottom_menu_items) > 0) 
+          %div{:class=>"top"}
+            %div{:class=>"bottom-menu-navigation", :style=>"width:100%;"}
+              %div{:id=>"bottom_menu", :class=>"links" }
+                - foreach ($bottom_menu_items as $menu)
+                  = link_to($menu->title, $menu->url)
+      %table.middle{:style=>'margin-top: 0px;'}
+        %tr
+          %td.center
+            .content
+              -if (count($subnav_links['data'])>0)
+                .tab_bar
+                  %ul
+                    - foreach(gather($subnav_links['data'], 'links') as $link)
+                      %li
+                        %a{:href=>$link['href']}= $link['label']
+                %div{:class=>'clear'}
+              -if (count($section_links['data'])>0)
+                .section_link_bar
+                  %ul
+                    - foreach(gather($section_links['data'], 'links') as $link)
+                      %li
+                        %a{:href=>$link['href']}= $link['label']
+                %div{:class=>'clear'}
+              - if (count($flash)>0)
+                .flash
+                  -foreach($flash as $message)
+                    =$message
+                    %br
+              =$after_flash['output']
+              =$content['output']
+              =$after_content['output']      
+      .bottom{:style=>'margin-right: 20px;'}
+        .footer{:style=>'width: 100%; border: none;'}
+          =$footer['output']
+          .copyright
+            =se("Maintained By ")
+            =se(COMPANY_NAME)
+            =se("(c) 2009")
+          .links
+            - foreach(gather($footer_links['data'], 'links') as $link)
+              %a{:href=>$link['href']}= $link['label']
+          =$after_footer['output']
